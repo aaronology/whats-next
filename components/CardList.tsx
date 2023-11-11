@@ -1,4 +1,5 @@
 "use client";
+
 import {
   Card,
   CardContent,
@@ -7,115 +8,151 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Check, ChevronsUpDown } from "lucide-react";
+
+import * as React from "react";
+
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
-import { PenSquare } from "lucide-react";
-import { Archive } from "lucide-react";
-import { Trash } from "lucide-react";
 
 import Link from "@/node_modules/next/link";
 import { Todo } from "@/components/interfaces/Todo";
 import { getRelativeTimeString } from "./getRelativeTimeString";
-import { Button } from "./ui/button";
 import { useRouter } from "@/node_modules/next/navigation";
-import { Todo } from "@/components/interfaces/Todo";
-
-const edit = (id: string) => {
-  console.log("Editing ", id);
-};
-const remove = (id: string) => {
-  console.log("Removing card itm", id);
-  return fetch("http://127.0.0.1:8090/api/collections/todos/records/" + id, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-};
-const archive = (cardItm: Todo) => {
-  console.log("Archiving ", cardItm.id);
-  cardItm.archived = true;
-  fetch("http://127.0.0.1:8090/api/collections/todos/records/" + cardItm.id, {
-    method: "UPDATE",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(cardItm),
-  });
-};
+import CardButtons from "./CardButtons";
 
 const CardList = (props) => {
+  let { cardItmArr } = props;
   const router = useRouter();
+  const [itmArray, setItmArray] = React.useState(cardItmArr);
+  // For combobox:
+  const [open, setOpen] = React.useState(false);
+  const [value, setValue] = React.useState("");
+
+  // setItmArray(
+  itmArray.sort((a, b) => {
+    if (value == "priority") {
+      if (a.priority == "high") return -1;
+      else if (a.priority == "medium" && b.priority != "high") return -1;
+      else return 1;
+    } else if (value == "due") return a.due > b.due ? 1 : -1;
+    else return a.created > b.created ? -1 : 1;
+  });
+  // );
+
+  const sortingOptions = [
+    {
+      value: "priority",
+      label: "Priority",
+    },
+    {
+      value: "due",
+      label: "Due Date",
+    },
+    {
+      value: "last-edit",
+      label: "Last Edited",
+    },
+  ];
   return (
-    <div className="grid grid-cols-3 gap-8 ">
-      {props.cardItmArr?.map((cardItm: Todo) => (
-        // Card has the class group to make group-hover possible
-        <Card key={cardItm.id} className="relative flex flex-col group">
-          <CardHeader>
-            <CardTitle>{cardItm.title}</CardTitle>
-            <CardDescription>
-              {getRelativeTimeString(cardItm.due)}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p>
-              {`${cardItm.description.slice(0, 100)}${
-                cardItm.description.length > 100 ? "..." : ""
-              }`}
-            </p>
-          </CardContent>
-          <CardFooter className="">
-            <Badge
-              className={`absolute bottom-0 right-0 rounded-none rounded-tl-lg rounded-br-lg ${
-                cardItm.priority == "low"
-                  ? "bg-lime-400"
-                  : cardItm.priority == "medium"
-                  ? "bg-amber-400"
-                  : "bg-orange-400"
-              }`}
-            >
-              {cardItm.priority} priority
-            </Badge>
-          </CardFooter>
-          <div className="icons-container flex gap-2 absolute top-0 right-0 p-4 invisible group-hover:visible">
-            <div
-              onClick={() => {
-                edit(cardItm.id);
-              }}
-            >
-              <PenSquare
-                size={22}
-                strokeWidth={2}
-                color="white"
-                className="cursor-pointer"
-              />
-            </div>
-            <div
-              onClick={() => {
-                archive(cardItm);
-              }}
-            >
-              <Archive
-                size={22}
-                strokeWidth={2}
-                color="white"
-                className="cursor-pointer"
-              />
-            </div>
-            <button
-              onClick={async () => {
-                await remove(cardItm.id);
-              }}
-            >
-              <Trash
-                size={22}
-                strokeWidth={2}
-                color="white"
-                className="cursor-pointer"
-              />
-            </button>
-          </div>
-        </Card>
-      ))}
+    <div>
+      {/* Sort by combobox / selector */}
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            className="w-[200px] justify-between"
+          >
+            {value
+              ? sortingOptions.find((option) => option.value === value)?.label
+              : "Sort by"}
+            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-[200px] p-0">
+          <Command>
+            <CommandGroup>
+              {sortingOptions.map((option) => (
+                <CommandItem
+                  key={option.value}
+                  value={option.value}
+                  onSelect={(currentValue) => {
+                    setValue(currentValue === value ? "" : currentValue);
+                    setOpen(false);
+                  }}
+                >
+                  <Check
+                    className={cn(
+                      "mr-2 h-4 w-4",
+                      value === option.value ? "opacity-100" : "opacity-0"
+                    )}
+                  />
+                  {option.label}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </Command>
+        </PopoverContent>
+      </Popover>
+
+      <div className="grid grid-cols-3 gap-8 my-8">
+        {itmArray.map((cardItm: Todo) => (
+          // Card has the class group to make group-hover possible
+          <Card
+            key={cardItm.id}
+            className="relative flex flex-col group cursor-pointer"
+            onClick={() => {
+              router.push(`/view/${cardItm.id}`);
+            }}
+          >
+            <CardHeader>
+              <CardTitle>{cardItm.title}</CardTitle>
+              <CardDescription>
+                Due {getRelativeTimeString(cardItm.due)}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p>
+                {`${cardItm.description.slice(0, 100)}${
+                  cardItm.description.length > 100 ? "..." : ""
+                }`}
+              </p>
+            </CardContent>
+            <CardFooter className="">
+              <p className="absolute bottom-0 pb-2 text-muted-foreground">
+                Last Edit: {getRelativeTimeString(cardItm.created)}
+              </p>
+              <Badge
+                className={`absolute bottom-0 right-0 rounded-none rounded-tl-lg rounded-br-lg ${
+                  cardItm.priority == "low"
+                    ? "bg-lime-400"
+                    : cardItm.priority == "medium"
+                    ? "bg-amber-400"
+                    : "bg-orange-400"
+                }`}
+              >
+                {cardItm.priority} priority
+              </Badge>
+            </CardFooter>
+            <CardButtons cardItm={cardItm} />
+          </Card>
+        ))}
+      </div>
     </div>
   );
 };

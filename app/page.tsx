@@ -17,9 +17,10 @@ async function getTodos(): Promise<Todo[]> {
 
 export default async function Home() {
   const todos = await getTodos();
+  const nonarchived = todos.filter((todo) => !todo.archived);
   return (
     <main>
-      <CardList cardItmArr={todos} />
+      <CardList cardItmArr={nonarchived} />
 
       <div className="add-button fixed bottom-0 right-0 p-7">
         <Link href="/add">
