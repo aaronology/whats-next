@@ -37,13 +37,12 @@ import CardButtons from "./CardButtons";
 const CardList = (props) => {
   let { cardItmArr } = props;
   const router = useRouter();
-  const [itmArray, setItmArray] = React.useState(cardItmArr);
   // For combobox:
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
 
   // setItmArray(
-  itmArray.sort((a, b) => {
+  cardItmArr.sort((a, b) => {
     if (value == "priority") {
       if (a.priority == "high") return -1;
       else if (a.priority == "medium" && b.priority != "high") return -1;
@@ -111,7 +110,7 @@ const CardList = (props) => {
       </Popover>
 
       <div className="grid grid-cols-3 gap-8 my-8">
-        {itmArray.map((cardItm: Todo) => (
+        {cardItmArr.map((cardItm: Todo) => (
           // Card has the class group to make group-hover possible
           <Card
             key={cardItm.id}
