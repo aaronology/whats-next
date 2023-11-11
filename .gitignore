@@ -36,4 +36,5 @@ yarn-error.log*
 next-env.d.ts
 
 #Pocketbase
-./pb_*
+pb_data
+pb_migrations
