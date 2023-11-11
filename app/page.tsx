@@ -6,7 +6,10 @@ import { Todo } from "@/components/interfaces/Todo";
 
 async function getTodos(): Promise<Todo[]> {
   const res = await fetch(
-    `http://127.0.0.1:8090/api/collections/todos/records`
+    `http://127.0.0.1:8090/api/collections/todos/records`,
+    {
+      cache: "no-store",
+    }
   );
   const data = await res.json();
   return data?.items;
@@ -18,7 +21,7 @@ export default async function Home() {
     <main>
       <CardList cardItmArr={todos} />
 
-      <div className="add-button absolute bottom-0 right-0 p-7">
+      <div className="add-button fixed bottom-0 right-0 p-7">
         <Link href="/add">
           <Button className="rounded-full h-12 w-12">
             <Plus size={20} strokeWidth={3} color="white" />
