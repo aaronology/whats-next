@@ -52,20 +52,26 @@ const submitForm = async (
 ) => {
   if (!isNewEntry) {
     // Deleting the old entry from server
-    await fetch("http://127.0.0.1:8090/api/collections/todos/records/" + id, {
-      method: "DELETE",
+    await fetch(
+      "https://whatsnext.pockethost.io/api/collections/todos/records/" + id,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  }
+  return fetch(
+    "https://whatsnext.pockethost.io/api/collections/todos/records",
+    {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-    });
-  }
-  return fetch("http://127.0.0.1:8090/api/collections/todos/records", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(values),
-  });
+      body: JSON.stringify(values),
+    }
+  );
 };
 const FormBuilder = (props) => {
   const router = useRouter();

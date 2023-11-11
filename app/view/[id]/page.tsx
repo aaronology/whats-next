@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 
 async function getTodos(): Promise<Todo[]> {
   const res = await fetch(
-    `http://127.0.0.1:8090/api/collections/todos/records`,
+    `https://whatsnext.pockethost.io/api/collections/todos/records`,
     {
       cache: "no-store",
     }

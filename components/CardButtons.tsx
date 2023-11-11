@@ -15,18 +15,22 @@ import { useRouter } from "@/node_modules/next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 
 const remove = (id: string, e) => {
-  return fetch("http://127.0.0.1:8090/api/collections/todos/records/" + id, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  return fetch(
+    "https://whatsnext.pockethost.io/api/collections/todos/records/" + id,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
 };
 const archive = async (cardItm: Todo) => {
   console.log("Archiving ", cardItm.id);
   // Deleting the entry
   await fetch(
-    "http://127.0.0.1:8090/api/collections/todos/records/" + cardItm.id,
+    "https://whatsnext.pockethost.io/api/collections/todos/records/" +
+      cardItm.id,
     {
       method: "DELETE",
       headers: {
@@ -39,13 +43,16 @@ const archive = async (cardItm: Todo) => {
   // If it's not archived (visible in home page), archive it
   // If it's archived (visible in archived page), unarchive it
   cardItm.archived = !cardItm.archived;
-  return fetch("http://127.0.0.1:8090/api/collections/todos/records/", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(cardItm),
-  });
+  return fetch(
+    "https://whatsnext.pockethost.io/api/collections/todos/records/",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(cardItm),
+    }
+  );
 };
 
 const CardButtons = (props) => {

@@ -71,7 +71,7 @@ const arr = [
 ];
 
 arr.forEach((itm) => {
-  fetch("http://127.0.0.1:8090/api/collections/todos/records/", {
+  fetch("https://whatsnext.pockethost.io/api/collections/todos/records/", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
