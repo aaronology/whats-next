@@ -19,7 +19,7 @@ const Navbar = () => {
       {/* Left side (title) */}
       <div>
         <Link href="/">
-          <span className="mark text-2xl">What's Next?</span>
+          <span className="mark text-2xl">{`What's Next?`}</span>
         </Link>
       </div>
       {/* Right side (links) */}
