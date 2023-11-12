@@ -1,4 +1,4 @@
-import { Todo } from "@/components/interfaces/Todo";
+import Todo from "@/components/interfaces/Todo";
 import { Button } from "@/components/ui/button";
 import Link from "@/node_modules/next/link";
 import { Pencil } from "lucide-react";
@@ -16,7 +16,7 @@ async function getTodos(): Promise<Todo[]> {
   return data?.items;
 }
 
-const ViewCard = async ({ params }) => {
+const ViewCard = async ({ params }: { params: { id: string } }) => {
   const id = params.id;
   const todos = await getTodos();
   // Filtering out the required todo by ID

@@ -1,5 +1,5 @@
 import FormBuilder from "@/components/FormBuilder";
-import { Todo } from "@/components/interfaces/Todo";
+import Todo from "@/components/interfaces/Todo";
 
 async function getTodos(): Promise<Todo[]> {
   const res = await fetch(
@@ -12,7 +12,7 @@ async function getTodos(): Promise<Todo[]> {
   return data?.items;
 }
 
-const Edit = async ({ params }) => {
+const Edit = async ({ params }: { params: { id: string } }) => {
   const id = params.id;
   const todos = await getTodos();
   // Filtering out the required todo by ID
@@ -23,6 +23,8 @@ const Edit = async ({ params }) => {
     due: new Date(todo.due),
     archived: todo.archived,
     priority: todo.priority,
+    created: new Date(),
+    id: todo.id,
   };
   return (
     <FormBuilder isNewEntry={false} defaultValues={defaultValues} id={id} />

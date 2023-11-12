@@ -29,12 +29,12 @@ import {
 import { Badge } from "@/components/ui/badge";
 
 import Link from "@/node_modules/next/link";
-import { Todo } from "@/components/interfaces/Todo";
+import Todo from "@/components/interfaces/Todo";
 import { getRelativeTimeString } from "./getRelativeTimeString";
 import { useRouter } from "@/node_modules/next/navigation";
 import CardButtons from "./CardButtons";
 
-const CardList = (props) => {
+const CardList = (props: { cardItmArr: Todo[] }) => {
   let { cardItmArr } = props;
   const router = useRouter();
   // For combobox:
@@ -90,7 +90,7 @@ const CardList = (props) => {
                 <CommandItem
                   key={option.value}
                   value={option.value}
-                  onSelect={(currentValue) => {
+                  onSelect={(currentValue: string) => {
                     setValue(currentValue === value ? "" : currentValue);
                     setOpen(false);
                   }}

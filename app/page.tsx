@@ -2,7 +2,7 @@ import CardList from "@/components/CardList";
 import { Button } from "@/components/ui/button";
 import Link from "@/node_modules/next/link";
 import { Plus } from "lucide-react";
-import { Todo } from "@/components/interfaces/Todo";
+import Todo from "@/components/interfaces/Todo";
 
 async function getTodos(): Promise<Todo[]> {
   const res = await fetch(

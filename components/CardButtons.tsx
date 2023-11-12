@@ -13,8 +13,9 @@ import {
 
 import { useRouter } from "@/node_modules/next/navigation";
 import { useToast } from "@/components/ui/use-toast";
+import Todo from "@/components/interfaces/Todo";
 
-const remove = (id: string, e) => {
+const remove = (id: string) => {
   return fetch(
     "https://whatsnext.pockethost.io/api/collections/todos/records/" + id,
     {
@@ -55,7 +56,7 @@ const archive = async (cardItm: Todo) => {
   );
 };
 
-const CardButtons = (props) => {
+const CardButtons = (props: { cardItm: Todo }) => {
   const { cardItm } = props;
   const router = useRouter();
   const { toast } = useToast();

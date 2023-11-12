@@ -36,6 +36,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import Todo from "./interfaces/Todo";
 
 const formSchema = z.object({
   title: z.string().min(2).max(50),
@@ -47,8 +48,8 @@ const formSchema = z.object({
 
 const submitForm = async (
   values: z.infer<typeof formSchema>,
-  isNewEntry: bool,
-  id: number
+  isNewEntry: boolean,
+  id: string
 ) => {
   if (!isNewEntry) {
     // Deleting the old entry from server
@@ -73,11 +74,15 @@ const submitForm = async (
     }
   );
 };
-const FormBuilder = (props) => {
+const FormBuilder = (props: {
+  isNewEntry: boolean;
+  defaultValues: Todo;
+  id: string;
+}) => {
+  const { isNewEntry, defaultValues, id } = props;
   const router = useRouter();
   const { toast } = useToast();
 
-  const { isNewEntry, defaultValues, id } = props;
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
